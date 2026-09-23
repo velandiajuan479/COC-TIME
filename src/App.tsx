@@ -77,6 +77,7 @@ const INITIAL_BUILDERS: BuilderSlot[] = [
 
 export default function App() {
   const [village, setVillage] = useState<VillageType>('home');
+  const [townHallLevel, setTownHallLevel] = useState<number>(15);
   const [selectedPreset, setSelectedPreset] = useState<UpgradePreset>(UPGRADE_PRESETS[0]);
   const [customDurationSeconds, setCustomDurationSeconds] = useState<number>(14 * 86400);
   const [isCustom, setIsCustom] = useState<boolean>(false);
@@ -110,18 +111,20 @@ export default function App() {
     };
   }, []);
 
-  // When village changes, update preset recommendation
+  // When village changes, update preset recommendation and Town Hall
   const handleVillageChange = (newVillage: VillageType) => {
     setVillage(newVillage);
+    if (newVillage === 'builder_base') {
+      setTownHallLevel(10);
+      setActiveBuildersCount(2); // Master builder + B.O.B
+    } else {
+      setTownHallLevel(15);
+      setActiveBuildersCount(6);
+    }
     const matching = UPGRADE_PRESETS.find((p) => p.village === newVillage);
     if (matching) {
       setSelectedPreset(matching);
       setIsCustom(false);
-    }
-    if (newVillage === 'builder_base') {
-      setActiveBuildersCount(2); // Master builder + B.O.B
-    } else {
-      setActiveBuildersCount(6);
     }
   };
 
@@ -133,6 +136,24 @@ export default function App() {
   const handleCustomChange = (seconds: number) => {
     setCustomDurationSeconds(seconds);
     setIsCustom(true);
+  };
+
+  const handleAssignCurrentUpgradeToBuilder = (id: number) => {
+    const upgradeTitle = isCustom ? 'Mejora Personalizada' : selectedPreset.name;
+    const upgradeDur = isCustom ? customDurationSeconds : selectedPreset.durationSeconds;
+    setBuilders((prev) =>
+      prev.map((b) =>
+        b.id === id
+          ? {
+              ...b,
+              upgradeName: upgradeTitle,
+              durationSeconds: upgradeDur,
+              remainingSeconds: upgradeDur,
+              isActive: true,
+            }
+          : b
+      )
+    );
   };
 
   // Builder Slot actions
@@ -225,7 +246,7 @@ export default function App() {
           activeBuilders={activeBuildersCount}
         />
 
-        {/* Upgrade Selection (Preset Upgrades & Custom Days/Hours) */}
+        {/* Upgrade Selection (Town Hall, Building Levels & Custom Days/Hours) */}
         <UpgradeSelector
           selectedPreset={selectedPreset}
           customDurationSeconds={customDurationSeconds}
@@ -233,6 +254,8 @@ export default function App() {
           onSelectPreset={handleSelectPreset}
           onCustomChange={handleCustomChange}
           currentVillage={village}
+          currentTownHall={townHallLevel}
+          onTownHallChange={setTownHallLevel}
         />
 
         {/* Two-Column Simulation Modules */}
@@ -284,6 +307,8 @@ export default function App() {
           onToggleBuilder={handleToggleBuilder}
           onUpdateUpgradeName={handleUpdateUpgradeName}
           onUpdateDurationDays={handleUpdateDurationDays}
+          onAssignCurrentUpgrade={handleAssignCurrentUpgradeToBuilder}
+          currentUpgradeName={isCustom ? 'Mejora Personalizada' : selectedPreset.name}
         />
 
         {/* Gem & Resource ROI Analytics */}

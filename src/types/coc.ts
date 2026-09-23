@@ -1,5 +1,25 @@
 export type VillageType = 'home' | 'builder_base';
 
+export interface BuildingLevelInfo {
+  level: number;
+  requiredTH: number; // minimum Town Hall or Builder Hall required
+  durationSeconds: number;
+  cost?: string;
+  notes?: string;
+}
+
+export interface BuildingDefinition {
+  id: string;
+  name: string;
+  category: 'town_hall' | 'defense' | 'hero' | 'army' | 'resource' | 'laboratory';
+  village: VillageType;
+  iconName: string;
+  unlockedAtTH: number; // minimum TH or BH to unlock
+  maxLevel: number;
+  levels: BuildingLevelInfo[];
+  description: string;
+}
+
 export interface UpgradePreset {
   id: string;
   name: string;

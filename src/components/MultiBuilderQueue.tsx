@@ -9,6 +9,8 @@ interface MultiBuilderQueueProps {
   onToggleBuilder: (id: number) => void;
   onUpdateUpgradeName: (id: number, name: string) => void;
   onUpdateDurationDays: (id: number, days: number) => void;
+  onAssignCurrentUpgrade?: (id: number) => void;
+  currentUpgradeName?: string;
 }
 
 export const MultiBuilderQueue: React.FC<MultiBuilderQueueProps> = ({
@@ -17,6 +19,8 @@ export const MultiBuilderQueue: React.FC<MultiBuilderQueueProps> = ({
   onToggleBuilder,
   onUpdateUpgradeName,
   onUpdateDurationDays,
+  onAssignCurrentUpgrade,
+  currentUpgradeName,
 }) => {
   return (
     <div className="bg-slate-900/90 border border-slate-800 rounded-2xl p-4 sm:p-5 shadow-xl backdrop-blur-sm">
@@ -124,6 +128,16 @@ export const MultiBuilderQueue: React.FC<MultiBuilderQueueProps> = ({
                     <div className="flex items-center justify-between text-xs">
                       <span className="text-slate-400 text-[11px]">Duración:</span>
                       <div className="flex items-center gap-1">
+                        {onAssignCurrentUpgrade && currentUpgradeName && (
+                          <button
+                            type="button"
+                            onClick={() => onAssignCurrentUpgrade(builder.id)}
+                            className="text-[10px] px-1.5 py-0.5 rounded font-mono font-bold bg-amber-500/20 text-amber-300 hover:bg-amber-500/30 border border-amber-500/40"
+                            title={`Asignar "${currentUpgradeName}" a este constructor`}
+                          >
+                            Pegar activa
+                          </button>
+                        )}
                         {[3, 7, 10, 14].map((d) => (
                           <button
                             key={d}
