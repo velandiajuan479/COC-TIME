@@ -1,0 +1,6 @@
+{
+  "name": "Clash of Clans - Simulador de Pócimas del Constructor y Torre del Reloj",
+  "description": "Simula tiempos de mejora, aceleración 10x, impacto acumulado en recursos y eficiencia de gemas en tiempo real con pócimas del constructor y la torre del reloj de Clash of Clans.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
